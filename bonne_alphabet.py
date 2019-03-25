@@ -9,20 +9,32 @@ import copy as cp
 
 ################ Question 1 : nombre min d'inversions #############################
 
-def Inversion(L):
+def Inversion(L): # Emilie
     """ inverse une liste de caractères"""
     Lc=cp.deepcopy(L)
     return Lc[::-1]
 
-def ConvertAsci(L):
-    """ convert to ascii code a list of characters"""
+def ConvertAsci(L): # Louise
+    """Fonction qui convertie une liste de caracteres en liste de code ascii.
+
+    Parameters
+    ----------
+    L
+        Une liste de caracteres.
+
+    Returns
+    -------
+    La
+        Une liste de code ascii.
+
+    """
     La = []
     for i in range(len(L)):
         La.append(ord(L[i]))
     return La
        
 
-def Adjacent(L ):
+def Adjacent(L ): # Emilie
     """ trouver les couples lettres de la liste de caractères convertis en code ascii L qui sont consécutives dans l'ordre alphabétique"""
     adj=[] # liste des indices des groupes adjacents
     for i in range(len(L)-1):
@@ -32,7 +44,7 @@ def Adjacent(L ):
             adj.append([i,i+1])
     return adj
 
-def Score(L):
+def Score(L): # Louise
     """ calcul le nombre de couples de lettres qui sont consécutives dans l'ordre alphabétiques + si le min(L) est en position 0 + si le max(L) est en position -1.
     L est une liste de caractères convertis en code ascii"""
     score=len(Adjacent(L))
@@ -44,7 +56,7 @@ def Score(L):
     return score
 
 
-def end_ord(l) :
+def end_ord(l) : # Emilie
 	"""prend en argument une liste de codes ASCII et renvoie l'indice de la première lettre qui n'est plus dans l'ordre alphabetique"""
 	ind=0
 	while l[ind+1]==l[ind]+1:
@@ -56,7 +68,7 @@ def end_ord(l) :
 		return ind+1
 
 
-def nb_inversion(l):
+def nb_inversion(l): # Louise
 	""" prend en argument une liste de chaine de caractères composées de lettre de l'alphabet retourne
 	 le nobre minimum d'inversions necessaires pour obtenir une liste dans m'ordre alphabetique"""
 
@@ -95,7 +107,7 @@ def nb_inversion(l):
 
 
 
-def permutation(liste_ascii, current_score, dist):
+def permutation(liste_ascii, current_score, dist): # Emilie
 	"""Permutation prend en argument une liste d'entier correspondant au code ascii et le score associé à cette liste, et la distance de l'origine. 
 	Cette fonction retourne une liste des permutations ayant permis d'améliorer ou de conserver le score pris en argument. """
 
@@ -142,13 +154,15 @@ def permutation(liste_ascii, current_score, dist):
 	else: # Tout est déjà fait ;)
 		print('The sequence is ever sorted') 
 		return []	# On retourne une liste vide qui est nécessaire pour la gestion de la pile de la fonction (ou qui était nécessaire je sais plus)
+
 			
-def seq_aleatoire(l_ascii):
+def seq_aleatoire(l_ascii): # Louise
 	"Permet de générer une séquence alétoire de même composition que celle passée en argument"
 	random.shuffle(l_ascii)
 	return l_ascii
 
-def scenario_aleatoire(l,runs):
+
+def scenario_aleatoire(l,runs): # Emilie
 	"""Scenario aleatoire prend en argument une liste d'entier correspondant au code ascii d'une séquence
 	et un nombre de simulations (runs). Cette fonction calcule le nombre d'inversions nécessaires
 	pour trier une séquence aléatoire et retournera une liste contenant le nombre d'inversion minimal qui 
@@ -162,7 +176,8 @@ def scenario_aleatoire(l,runs):
 	moy_dist= sum(res)/len(res)
 	return res, moy_dist
 
-def stat_parente(v_alea, d_obs):
+
+def stat_parente(v_alea, d_obs): # Louise
 	"""Cette fonction retourne la probabilité d'observer une distance moyenne équivalente à d_obs sous l'hypothèse du hasard.
 	Elle prend en argument le nombre minimal d'inversions néecessaires pour ordonner la séquence de gène (d_obs), et une liste de 
 	taille |l| qui contient le nombre minimal d'inversions néecessaires pour ordonner |l| séquences aléatoires de  taille équivalente
@@ -174,82 +189,84 @@ def stat_parente(v_alea, d_obs):
 	prob = e/len(v_alea)
 	return prob
 
-# ---------- TESTS DES FONCTIONS ---------- #
-"""		
-print("\n MOT 1  ")
-mot1 = "bcaed" 
-L1 = ConvertAsci(mot1)
-P1  = permutation(L1, Score(L1), 0)
-print("Adjacence L1  : ", Adjacent(L1))
-print("Score  ", Score(L1))
-print("Trie jusqu a : ", end_ord(L1))
-print("Permutation P1 " , P1)
+
+if __name__=="__main__":
+    # ---------- TESTS DES FONCTIONS ---------- #
+    """		
+    print("\n MOT 1  ")
+    mot1 = "bcaed" 
+    L1 = ConvertAsci(mot1)
+    P1  = permutation(L1, Score(L1), 0)
+    print("Adjacence L1  : ", Adjacent(L1))
+    print("Score  ", Score(L1))
+    print("Trie jusqu a : ", end_ord(L1))
+    print("Permutation P1 " , P1)
 
 
-print("\n MOT 2  ")
-mot2 = "abedc" 
-L2 = ConvertAsci(mot2)
-P2  = permutation(L2, Score(L2),0)
-print("P2", P2)
-
-
-
-print("\n MOT 3  ")
-mot3 = "acbdfe" 
-L3 = ConvertAsci(mot3)
-print("Adjacence L3  : ", Adjacent(L3))
-print("Score  ", Score(L3))
-P3  = permutation(L3, Score(L3),0)
-print("P3", P3)
-
-
-print("\n MOT 3  ")
-mot3 = "bcadfegih"
-L3 = ConvertAsci(mot3)
-print("TRie jusqua : ", end_ord(L3))
-P3  = permutation(L3, Score(L3),0)
-print("P1", P3)
-print("\n")
-print('\n  Nb inversion obs   :    \n' , nb_inversion("bcadfe")  )
+    print("\n MOT 2  ")
+    mot2 = "abedc" 
+    L2 = ConvertAsci(mot2)
+    P2  = permutation(L2, Score(L2),0)
+    print("P2", P2)
 
 
 
-print("\n MOT Exemple cours   ")
-mot4 = "lhfebadckijgm"
-L4 = ConvertAsci(mot4)
-print("Trie jusqua : ", end_ord(L4))
-P4  = permutation(L4, Score(L4),0)
-print("P4", P4)
-
-print('\n')
-print('\n')
-print('\n Nb inversion obs   :    \n' , nb_inversion("lhfebadckijgm")  )
-print('\n scenario_aleatoire de L4  :',  scenario_aleatoire(L4,4)[0], 'Distance moy', scenario_aleatoire(L4,4)[1] )
+    print("\n MOT 3  ")
+    mot3 = "acbdfe" 
+    L3 = ConvertAsci(mot3)
+    print("Adjacence L3  : ", Adjacent(L3))
+    print("Score  ", Score(L3))
+    P3  = permutation(L3, Score(L3),0)
+    print("P3", P3)
 
 
-# Un peu plus long 
-print('\n')
-mot5 = "ailgkjmbcefhd"
-L5= ConvertAsci(mot5)
-print("Trie jusqua : ", end_ord(L5))
-P5 = permutation(L5, Score(L5),0)
-print("P5", P5)
-print('\n')
-print('\n Nb inversion obs   :    \n' , nb_inversion("ailgkjmbcefhd")  )
-"""
-
-print("\n  CHROMOSOME A 6 GENES  \n")
-g6 = "bcadfe"
-L6 = ConvertAsci(g6)
-print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L6,50)[1] )
+    print("\n MOT 3  ")
+    mot3 = "bcadfegih"
+    L3 = ConvertAsci(mot3)
+    print("TRie jusqua : ", end_ord(L3))
+    P3  = permutation(L3, Score(L3),0)
+    print("P1", P3)
+    print("\n")
+    print('\n  Nb inversion obs   :    \n' , nb_inversion("bcadfe")  )
 
 
-print("\n  CHROMOSOME A 7 GENES  \n")
-g7 = "bcadfeg"
-L7 = ConvertAsci(g7)
-print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L7,50)[1] )
 
-print("\n  CHROMOSOME A 13 GENES  \n")
-g13 = "abcdefghijklm"
-L13 = ConvertAsci(g13)
-print("\n Distance moyenne d'inversions calculée sur 20 scenari : d_moy=", scenario_aleatoire(L13,20)[1] )
+    print("\n MOT Exemple cours   ")
+    mot4 = "lhfebadckijgm"
+    L4 = ConvertAsci(mot4)
+    print("Trie jusqua : ", end_ord(L4))
+    P4  = permutation(L4, Score(L4),0)
+    print("P4", P4)
+
+    print('\n')
+    print('\n')
+    print('\n Nb inversion obs   :    \n' , nb_inversion("lhfebadckijgm")  )
+    print('\n scenario_aleatoire de L4  :',  scenario_aleatoire(L4,4)[0], 'Distance moy', scenario_aleatoire(L4,4)[1] )
+
+
+    # Un peu plus long 
+    print('\n')
+    mot5 = "ailgkjmbcefhd"
+    L5= ConvertAsci(mot5)
+    print("Trie jusqua : ", end_ord(L5))
+    P5 = permutation(L5, Score(L5),0)
+    print("P5", P5)
+    print('\n')
+    print('\n Nb inversion obs   :    \n' , nb_inversion("ailgkjmbcefhd")  )
+    """
+
+    print("\n  CHROMOSOME A 6 GENES  \n")
+    g6 = "bcadfe"
+    L6 = ConvertAsci(g6)
+    print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L6,50)[1] )
+
+
+    print("\n  CHROMOSOME A 7 GENES  \n")
+    g7 = "bcadfeg"
+    L7 = ConvertAsci(g7)
+    print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L7,50)[1] )
+
+    print("\n  CHROMOSOME A 13 GENES  \n")
+    g13 = "abcdefghijklm"
+    L13 = ConvertAsci(g13)
+    print("\n Distance moyenne d'inversions calculée sur 20 scenari : d_moy=", scenario_aleatoire(L13,20)[1] )
