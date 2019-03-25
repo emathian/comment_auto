@@ -1,18 +1,37 @@
-import random
-import copy as cp
-
 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
+import random
+import copy as cp
 
 ################ Question 1 : nombre min d'inversions #############################
 
-def Inversion(L): # Emilie
-    """ inverse une liste de caractères"""
-    Lc=cp.deepcopy(L)
-    return Lc[::-1]
+def inversion(L):
+	"""Inverse les éléments d'une liste.
+
+	Cette fonction permet de réecrire les éléments de `L` de
+    droite à gauche.
+
+    Parameters
+    ----------
+    L : list
+        `L` est une liste ou une liste de liste.
+	
+    Returns
+    -------
+   Lc : array_like
+    	`Lc` est équivalente à liste `L` lue de droite à gauqhe.   
+	
+    Examples
+    --------
+	>>> L = [1,2,3,4,5]
+	>>> inversion(L)
+	[5, 4, 3, 2, 1]
+
+    """
+	Lc = cp.deepcopy(L)
+	return Lc[::-1]
 
 def ConvertAsci(L): # Louise
     """Fonction qui convertie une liste de caracteres en liste de code ascii.
@@ -32,22 +51,51 @@ def ConvertAsci(L): # Louise
     for i in range(len(L)):
         La.append(ord(L[i]))
     return La
-       
 
-def Adjacent(L ): # Emilie
-    """ trouver les couples lettres de la liste de caractères convertis en code ascii L qui sont consécutives dans l'ordre alphabétique"""
-    adj=[] # liste des indices des groupes adjacents
+def adjacent(L): 
+    """Recherche l'ensemble des éléments consécutifs d'une listes d'entiers.
+
+    Cette fonction prend en argument une liste d'entiers et retourne 
+    une liste de listes contenant tous les couples d'indices dont les 
+    valeurs dans `L` sont consécutives selon l'ordre numétique. Une liste 
+    vide est retournée si aucun élément de `L` n'est consécutif.
+
+    Parameters
+    ----------
+    L : list
+        `L` est une liste d'entiers.
+	
+    Returns
+    -------
+    adj : array_like
+       	`adj` est liste de listes contenant de tous les couples d'indice
+        de `L` dont les valeurs sont consécutives.   
+	
+    Examples
+    --------
+	>>> L1 = [3,4,1,2]
+	>>> adjacent(L1)
+	[[0, 1], [2, 3]]
+	>>> L2 = [1,2,3,4]
+	>>> adjacent(L2)
+	[[0, 1], [1, 2], [2, 3]]
+	>>> L3 = [2,4,1,3]
+	>>> adjacent(L3)
+	[]
+
+    """
+    adj=[] 
     for i in range(len(L)-1):
-        if L[i]==L[i+1]+1 :
+        if L[i]==L[i+1]+1 : 
             adj.append([i, i+1])
         elif L[i]==L[i+1]-1:
             adj.append([i,i+1])
     return adj
 
-def Score(L): # Louise
+def score(L): # Louise
     """ calcul le nombre de couples de lettres qui sont consécutives dans l'ordre alphabétiques + si le min(L) est en position 0 + si le max(L) est en position -1.
     L est une liste de caractères convertis en code ascii"""
-    score=len(Adjacent(L))
+    score=len(adjacent(L))
     if L.index(min(L))==0:
         score+=1
     if L.index(max(L))==len(L)-1:
@@ -56,17 +104,58 @@ def Score(L): # Louise
     return score
 
 
-def end_ord(l) : # Emilie
-	"""prend en argument une liste de codes ASCII et renvoie l'indice de la première lettre qui n'est plus dans l'ordre alphabetique"""
+def end_ord(l) : 
+	"""Recherche l'indice du premier élément non trié
+
+    Cette fonction recherche le premier élément d'une liste d'entiers 
+    qui n'est pas dans l'ordre numérique et retourne son indice. Si la
+    valeur retounée est égale à zéro alors les deux premiers éléments
+    ne sont pas dans le bonne ordre, la suite des éléments étant possiblement
+    triés. Si la valeur retournée est égale à la longueur de la liste,
+    alors cele-ci est triée.  
+
+    Parameters
+    ----------
+    l : list
+        `l` est une liste d'entiers.
+
+    Returns
+    -------
+    int
+        Indice du premier élément mal positionné de `l`.
+	
+    See Also
+    --------
+    permutation : Recherche itérative de toutes les inversions permettant d'améliorer le score
+   
+    Examples
+    --------
+	>>> L1 = [3,4,1,2]
+	>>> end_ord(L1)
+	2
+	>>> L2 = [1,2,3,4]
+	>>> end_ord(L2)
+	4
+	>>> L3 = [2,4,1,3]
+	>>> end_ord(L3)
+	0
+
+    """
 	ind=0
-	while l[ind+1]==l[ind]+1:
-		if ind < len(l):
-			ind+=1
-	if ind ==0 : # La première lettre est mal placée
+	cond = True
+	while cond : 
+		if ind < len(l) -1 :
+			if l[ind+1]==l[ind]+1 :  # Si l'élément courrant +1 est équivalent au suivant. 
+				ind+=1
+				cond = True 
+			else :
+				cond = False
+		else :  # La liste est entièrement triée.
+			cond = False
+	if ind ==0 : 
 		return 0
 	else :
 		return ind+1
-
 
 def nb_inversion(l): # Louise
 	""" prend en argument une liste de chaine de caractères composées de lettre de l'alphabet retourne
@@ -76,7 +165,7 @@ def nb_inversion(l): # Louise
 		l_ascii= ConvertAsci(l) #converti en liste de code ascii
 	else:
 		l_ascii = l
-	s=Score(l_ascii) #score initial de la sequence
+	s=score(l_ascii) #score initial de la sequence
 	l_nb_inv = [] # Liste du nombre d'inversion nécessaire par "branche"
 	d = 0
 	P  = permutation(l_ascii , s , d ) # Stack 
@@ -85,7 +174,7 @@ def nb_inversion(l): # Louise
 	while len(P) != 0 : # Tant que la pile n'est pas vide 
 		nb_inv += 1 # On augmente le compteur pour la "branche" parcourue
 		l_ascii = P[0][0] # On récupère le premier élement de la pile 
-		s = P[0][1] # Score du premier elmt de la pile
+		s = P[0][1] # score du premier elmt de la pile
 		d = P[0][2] # Distance à l'origine du premier éléement de la pile
 
 		if s!= len(l_ascii)+1  : # Si la seqence n'est pas triee
@@ -130,7 +219,7 @@ def permutation(liste_ascii, current_score, dist): # Emilie
 		res = [] # Liste de toute les permutations admises
 
 		for i in range(len(seq_to_permute)-1): # (-1) pour s'assurer que la séquence à inverser a une longueur supérieure à 1 
-			seq_inv = Inversion(seq_to_permute[i:]) # Inversion de la séquence à permuter 
+			seq_inv = inversion(seq_to_permute[i:]) # inversion de la séquence à permuter 
 
 			if sorted_to != min_letter : # Dans le cas où le début de la séquence est déjà dans le bon ordre (Mot 2 et 3)
 				if Spe_cond == False: # La lettre lettre minimale n'est pas la seule bien placée  (Mot 2)
@@ -145,7 +234,7 @@ def permutation(liste_ascii, current_score, dist): # Emilie
 				else : # Dans les cas suivants
 					seq_after_permutation = liste_ascii[:len(seq_to_permute)-len(seq_inv)]+seq_inv+liste_ascii[min_letter+1:]
 
-			c_score = Score(seq_after_permutation) # Calcul du nouveau score
+			c_score = score(seq_after_permutation) # Calcul du nouveau score
 	
 			if c_score >= current_score: # Si on a une amélioration ou une égalité (C'EST JUSTE ÇA ???)
 				res.append((seq_after_permutation , c_score , dist+1 )) # On retient la permutation			
@@ -192,21 +281,26 @@ def stat_parente(v_alea, d_obs): # Louise
 
 if __name__=="__main__":
     # ---------- TESTS DES FONCTIONS ---------- #
-    """		
+    	
     print("\n MOT 1  ")
     mot1 = "bcaed" 
     L1 = ConvertAsci(mot1)
-    P1  = permutation(L1, Score(L1), 0)
-    print("Adjacence L1  : ", Adjacent(L1))
-    print("Score  ", Score(L1))
+    print('L1  : ', L1)
+    print("Trie jusqu a : ", end_ord(L1))
+    P1  = permutation(L1, score(L1), 0)
+    print("Adjacence L1  : ", adjacent(L1))
+    print("score  ", score(L1))
     print("Trie jusqu a : ", end_ord(L1))
     print("Permutation P1 " , P1)
 
 
     print("\n MOT 2  ")
-    mot2 = "abedc" 
+    mot2 = "ecadb" 
     L2 = ConvertAsci(mot2)
-    P2  = permutation(L2, Score(L2),0)
+    print('mot 2 : ', mot2)
+    print("Trie jusqu a : ", end_ord(L2))
+    print("Adjacence L2  : ", adjacent(L2))
+    P2  = permutation(L2, score(L2),0)
     print("P2", P2)
 
 
@@ -214,9 +308,9 @@ if __name__=="__main__":
     print("\n MOT 3  ")
     mot3 = "acbdfe" 
     L3 = ConvertAsci(mot3)
-    print("Adjacence L3  : ", Adjacent(L3))
-    print("Score  ", Score(L3))
-    P3  = permutation(L3, Score(L3),0)
+    print("Adjacence L3  : ", adjacent(L3))
+    print("score  ", score(L3))
+    P3  = permutation(L3, score(L3),0)
     print("P3", P3)
 
 
@@ -224,18 +318,18 @@ if __name__=="__main__":
     mot3 = "bcadfegih"
     L3 = ConvertAsci(mot3)
     print("TRie jusqua : ", end_ord(L3))
-    P3  = permutation(L3, Score(L3),0)
+    P3  = permutation(L3, score(L3),0)
     print("P1", P3)
     print("\n")
     print('\n  Nb inversion obs   :    \n' , nb_inversion("bcadfe")  )
 
-
+    """
 
     print("\n MOT Exemple cours   ")
     mot4 = "lhfebadckijgm"
     L4 = ConvertAsci(mot4)
     print("Trie jusqua : ", end_ord(L4))
-    P4  = permutation(L4, Score(L4),0)
+    P4  = permutation(L4, score(L4),0)
     print("P4", P4)
 
     print('\n')
@@ -243,18 +337,18 @@ if __name__=="__main__":
     print('\n Nb inversion obs   :    \n' , nb_inversion("lhfebadckijgm")  )
     print('\n scenario_aleatoire de L4  :',  scenario_aleatoire(L4,4)[0], 'Distance moy', scenario_aleatoire(L4,4)[1] )
 
-
+   
     # Un peu plus long 
     print('\n')
     mot5 = "ailgkjmbcefhd"
     L5= ConvertAsci(mot5)
     print("Trie jusqua : ", end_ord(L5))
-    P5 = permutation(L5, Score(L5),0)
+    P5 = permutation(L5, score(L5),0)
     print("P5", P5)
     print('\n')
     print('\n Nb inversion obs   :    \n' , nb_inversion("ailgkjmbcefhd")  )
-    """
-
+    
+    
     print("\n  CHROMOSOME A 6 GENES  \n")
     g6 = "bcadfe"
     L6 = ConvertAsci(g6)
@@ -270,3 +364,8 @@ if __name__=="__main__":
     g13 = "abcdefghijklm"
     L13 = ConvertAsci(g13)
     print("\n Distance moyenne d'inversions calculée sur 20 scenari : d_moy=", scenario_aleatoire(L13,20)[1] )
+    """
+    """ REF : http://lapagearegis.free.fr/guidedestyle.html#commentaires
+    https://numpydoc.readthedocs.io/en/latest/example.html#example
+    https://bwanamarko.alwaysdata.net/napoleon/format_exception.html
+    https://realpython.com/documenting-python-code/ """
