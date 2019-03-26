@@ -127,6 +127,7 @@ def end_ord(l) :
     See Also
     --------
     permutation : Recherche itérative de toutes les inversions permettant d'améliorer le score
+    nb_inversion : Recherche itérative du nombre minimal d'inversion 
    
     Examples
     --------
@@ -196,53 +197,138 @@ def nb_inversion(l): # Louise
 
 
 
-def permutation(liste_ascii, current_score, dist): # Emilie
-	"""Permutation prend en argument une liste d'entier correspondant au code ascii et le score associé à cette liste, et la distance de l'origine. 
-	Cette fonction retourne une liste des permutations ayant permis d'améliorer ou de conserver le score pris en argument. """
+def permutation(L, score_courant, dist): 
+	"""Recherche les inversions possibles permettant de conserver ou d'améliorer le score
 
-	sorted_to =  end_ord(liste_ascii) # Retourne l'indice de la lettre qui n'est plus dans l'ordre
-	Spe_cond = False # Utile pour la définition d'une condition (un peu tordue)
+    Cette fonction prend en argument une liste d'entiers, son `score_courant` 
+    (cf : `score`), ainsi que sa distance à l'origine (à la séquence initiale). 
+    En effet elle est appellée par la procédure `nb_inversion`, qui détermine
+    le nombre d'inversions nécessaires pour trier une liste, ce nombre 
+    d'inversions détermine la distance l'origine d'une possibilité.
 
-	if sorted_to != len(liste_ascii): # Vérifie si la liste est déjà triée
-		min_letter= liste_ascii.index(min(liste_ascii[ sorted_to :])) # Renvoie l'indice de la plus petite lettre dans la séquence à trier 
-		if sorted_to != min_letter : # Condition nécessaire pour dans le cas où le début de la séquence est déjà trié (Exemple : Mot2= "ABEDC")
-			seq_to_permute =liste_ascii[ sorted_to :min_letter + 1]  # Recupération de la liste à permuter jusqu'à la lettre minimale incluse (+1)
-		else : # Sinon  le début est incorrect
-			if min_letter != 0: # Si la première n'est pas à la bonne position (Exemple : Mot1= "BCAED")
-				seq_to_permute =liste_ascii[ : sorted_to  + 1]  # Récupéreration de la séquence jusqu'à la première incluse
-			else : # Si la première lettre est bien placée et si seulement la première (Exemple : Mot3="ACBDFE")
-				Spe_cond = True # Il y a exception (Condition spéciale = True)
-				min_letter= liste_ascii.index(min(liste_ascii[ 1 :])) # Rechercher de la lettre minimale
-				seq_to_permute =liste_ascii[ 1: min_letter + 1]   # La séquence est entre la deuxième lettre et la lettre minimale
+   	Ainsi étant donné une liste et son état courant, `permutation` commence
+   	par déterminer la séquence à inverser, si une inversion est nécessaire.
+   	Pour `i` allant de 0 à la taille de la séquence à inverser -1, `permuatation`
+   	genère l'inversion de taille `i`, et recalcul le score. Si celui-ci au 
+   	moins égal au `score_courant`, `permutation` retient la liste inversée, 
+   	son score et incrémente sa distance de 1.
+
+    Parameters
+    ----------
+    L : list
+        `L` est une liste d'entiers.
+    score_courant : int
+    	Score de la liste (cf : `score`).
+    dist :  int
+		Distance à l'origine pour la séquence `L`, traduit le nombre d'inversions
+		qui ont déjà été réalisées sur `L`.
+
+    Returns
+    -------
+    res : liste de tuples
+    	`res` est une liste contanant autant de tuple que d'inversions
+    	conservées. Chaque tuple est constitué de la séquence après 
+    	inversion, de son score et de sa distance (`dist` + 1).
 	
-		seq_after_permutation =[] # Liste des résultats d'une permuation 
-		res = [] # Liste de toute les permutations admises
+    See Also
+    --------
+    nb_inversion : Recherche itérative du nombre minimal d'inversion 
 
-		for i in range(len(seq_to_permute)-1): # (-1) pour s'assurer que la séquence à inverser a une longueur supérieure à 1 
-			seq_inv = inversion(seq_to_permute[i:]) # inversion de la séquence à permuter 
+	Notes
+    -----
+    Étant donné que cette fonction fait appel à `nb_inversion`, elle ne peut
+    être appliquée que pour des listes de petite taille, afin de garantir 
+    l'éxécution du calcul dans un temps raisonnable. 
 
-			if sorted_to != min_letter : # Dans le cas où le début de la séquence est déjà dans le bon ordre (Mot 2 et 3)
-				if Spe_cond == False: # La lettre lettre minimale n'est pas la seule bien placée  (Mot 2)
-					seq_after_permutation = liste_ascii[:sorted_to+i] +seq_inv + liste_ascii[min_letter+1:]
-				else : # Sinon la condition spéciale est vraie (Mot 3)
-					first_elmt = [liste_ascii[0]] # Nécessaire car sinon on traite un entier 
-					seq_after_permutation = first_elmt+ seq_inv +  liste_ascii[min_letter+1:]
+    `permutation` gère les cas suivants :
+    1 : Si `L` est déjà triée une liste vide est renvoyée.
 
-			else : # Si le début de la séquence n'est pas trié (Mot 1) 
+    2 : Si seulement le début de `L` est trié la séquence à 
+    inverser correspond aux éléments situés après le dernier
+    élément dans le bon ordre. 
+    Exemple : ABEDC -> Séquence à inverser = EDC
+
+    3 : Si le début de la séquence n'est pas trié alors
+    la séquence à inverser correspond à l'ensemble des éléments
+    situés avant l'élément minimal.
+    Exemple : EDABC -> Séquence à inverser = EDA
+
+    4 : Si les premiers éléments de `L` sont successif mais
+    si le premier élément n'est pas bien placé alors la séquence
+    à inverser correspond à l'ensemble des éléments situés en 
+    amont du premier élément.
+    Exemple : BCAED -> Séquence à inverser = BCA
+
+	5 :  Si la première lettre est bien placée et si seulement
+	la première l'est alors la séquence à inverser correspond 
+	aux éléments situés après le premier élément et l'élément
+	minimal (sans prise en compte du premier).
+	Exemple : ACBDFE -> Séquence à inverser = CB
+
+   
+    Examples
+    --------
+	>>> L1 = [1,2,5,4,3]
+	>>> S1 = score(L1)
+	>>> permutation(L1,S1,0)  # Cas n°2
+	[([1, 2, 3, 4, 5], 6, 1)]
+	>>> L2 = [5,4,1,2,3]  
+	>>> S2 = score(L2)
+	>>> permutation(L2,S2,0)  # Cas n°3
+	[([1, 4, 5, 2, 3], 3, 1)]
+	>>> L3 = [2,3,1,5,4]
+	>>> S3 = score(L3)
+	>>> permutation(L3,S3,0)  # Cas n°4
+	[([1, 3, 2, 5, 4], 3, 1), ([2, 1, 3, 5, 4], 2, 1)]
+	>>> L4 = [1,3,2,4,6,5]
+	>>> S4 = score(L4)
+	>>> permutation(L4,S4,0)  # Cas n°5
+	[([1, 2, 3, 4, 6, 5], 5, 1)]
+	
+    """
+
+	sorted_to =  end_ord(L)  # Retourne l'indice du premier élément qui n'est plus dans l'ordre
+	Spe_cond = False  # Condition spéciale (cf : Cas n°5)
+
+	if sorted_to != len(L):  # Cas n°1
+		min_letter= L.index(min(L[ sorted_to :])) 
+		if sorted_to != min_letter :  # Condition nécessaire pour dans le cas où le début de la séquence est déjà trié (Exemple : Mot2= "ABEDC") (Cas n°2 et n°3)
+			seq_to_permute =L[ sorted_to :min_letter + 1]  # Recupération de la liste à permuter jusqu'à l'élément minimale inclus (+1)
+		else :  # Cas n°4 et n°5
+			if min_letter != 0:  # Si la première n'est pas à la bonne position (Exemple : Mot1= "BCAED") (Cas n°4)
+				seq_to_permute =L[ : sorted_to  + 1]  # Récupéreration de la séquence jusqu'au premiere élément inclus
+			else :  # Si la première lettre est bien placée et si seulement la première (Exemple : Mot3="ACBDFE") (Cas n°5)
+				Spe_cond = True 
+				min_letter= L.index(min(L[ 1 :])) # Redéfinition du minimum
+				seq_to_permute =L[ 1: min_letter + 1] # La séquence est entre le deuxième élément et l'élément minimale
+	
+		seq_after_permutation =[]  # Liste des résultats d'une permuation 
+		res = []  # Liste de toute les permutations admises
+
+		for i in range(len(seq_to_permute)-1):  # (-1) pour s'assurer que la séquence à inverser a une longueur supérieure à 1 
+			seq_inv = inversion(seq_to_permute[i:])  # inversion de la séquence à permuter 
+
+			if sorted_to != min_letter :  # Dans le cas où le début de la séquence est déjà dans le bon ordre (Mot 2 et 3) (Cas n°2 , n°3 et n°5)
+				if Spe_cond == False:  # La lettre lettre minimale n'est pas la seule bien placée (Mot 2) (Cas n°2 , n°3)
+					seq_after_permutation = L[:sorted_to+i] +seq_inv + L[min_letter+1:]
+				else : # Sinon la condition spéciale est vraie (Mot 3) (Cas n°5)
+					first_elmt = [L[0]] # Nécessaire car sinon on traite un entier 
+					seq_after_permutation = first_elmt+ seq_inv +  L[min_letter+1:]
+
+			else :  # Si le début de la séquence n'est pas trié (Mot 1) (Cas n°4)
 				if len(seq_to_permute)== len(seq_inv): # Pour la première itération
-					seq_after_permutation = seq_inv +liste_ascii[min_letter+1:]
-				else : # Dans les cas suivants
-					seq_after_permutation = liste_ascii[:len(seq_to_permute)-len(seq_inv)]+seq_inv+liste_ascii[min_letter+1:]
+					seq_after_permutation = seq_inv +L[min_letter+1:]
+				else :  # Dans les cas suivants
+					seq_after_permutation = L[:len(seq_to_permute)-len(seq_inv)]+seq_inv+L[min_letter+1:]
 
 			c_score = score(seq_after_permutation) # Calcul du nouveau score
 	
-			if c_score >= current_score: # Si on a une amélioration ou une égalité (C'EST JUSTE ÇA ???)
+			if c_score >= score_courant: # Si on a une amélioration ou une égalité 
 				res.append((seq_after_permutation , c_score , dist+1 )) # On retient la permutation			
 		return res
 
-	else: # Tout est déjà fait ;)
-		print('The sequence is ever sorted') 
-		return []	# On retourne une liste vide qui est nécessaire pour la gestion de la pile de la fonction (ou qui était nécessaire je sais plus)
+	else: # La séquence est déjà triée
+		return []	# On retourne une liste vide 
 
 			
 def seq_aleatoire(l_ascii): # Louise
@@ -251,14 +337,49 @@ def seq_aleatoire(l_ascii): # Louise
 	return l_ascii
 
 
-def scenario_aleatoire(l,runs): # Emilie
-	"""Scenario aleatoire prend en argument une liste d'entier correspondant au code ascii d'une séquence
-	et un nombre de simulations (runs). Cette fonction calcule le nombre d'inversions nécessaires
-	pour trier une séquence aléatoire et retournera une liste contenant le nombre d'inversion minimal qui 
-	a été nécessaire pour résoudre chaque simulation (séquence aléatoire), ainsi que le nombre d'inversion moyen. """
+def scenario_aleatoire(l,n): # Emilie
+	"""Recherche du nombre de d'inversions minimal sur suites aléatoires
+
+    Cette fonction prend en argument une liste d'entiers, elle la mélange
+    puis calcul le nombre d'inversions minimal nécessaire la trier. Ce 
+    processus est répété `n` fois. En sortie cette fonction retourne une 
+    liste de taille `n` contenant le nombre d'inversions minimal trouvé 
+    pour chaque test, ainsi que le nombre moyen d'inversions obtenu pour 
+    une liste de taille `l`.
+
+    Parameters
+    ----------
+    l : list
+        `l` est une liste d'entiers.
+    n : int
+    	`n` nombre d'itérations à effectuer.
+
+    Returns
+    -------
+    res : list
+        Liste contenant le nombre minimal d'inversion obtenu pour les `n`
+        répétitions.
+	
+    See Also
+    --------
+    seq_aleatoire : Genère des suites d'entiers aléatoires
+    nb_inversion : Recherche itérative du nombre minimal d'inversion 
+
+	Notes
+    -----
+    Étant donné que cette fonction fait appel à `nb_inversion`, elle ne peut
+    être appliquée que pour des listes de petite taille, afin de garantir 
+    l'éxécution du calcul dans un temps raisonnable. 
+   
+    Examples
+    --------
+	>>> L1 = [1,2,3,4,5]
+	>>> scenario_aleatoire(L1,10)
+	([2, 3, 3, 3, 2, 2, 3, 3, 2, 3], 2.6)
+
+    """
 	res =[]
-	for i in range(runs):
-		print("\n  \n i  :  ", i)
+	for i in range(n):
 		L = seq_aleatoire(l)
 		c_res = nb_inversion(L)
 		res.append(c_res)
@@ -282,7 +403,7 @@ def stat_parente(v_alea, d_obs): # Louise
 if __name__=="__main__":
     # ---------- TESTS DES FONCTIONS ---------- #
     	
-    print("\n MOT 1  ")
+    print("\n MOT 1 = bcaed ")
     mot1 = "bcaed" 
     L1 = ConvertAsci(mot1)
     print('L1  : ', L1)
@@ -295,7 +416,7 @@ if __name__=="__main__":
 
 
     print("\n MOT 2  ")
-    mot2 = "ecadb" 
+    mot2 = "abedc" 
     L2 = ConvertAsci(mot2)
     print('mot 2 : ', mot2)
     print("Trie jusqu a : ", end_ord(L2))
@@ -308,13 +429,15 @@ if __name__=="__main__":
     print("\n MOT 3  ")
     mot3 = "acbdfe" 
     L3 = ConvertAsci(mot3)
+    print("Trie jusqu a : ", end_ord(L3))
     print("Adjacence L3  : ", adjacent(L3))
     print("score  ", score(L3))
     P3  = permutation(L3, score(L3),0)
     print("P3", P3)
 
 
-    print("\n MOT 3  ")
+
+    print("\n MOT 4  ")
     mot3 = "bcadfegih"
     L3 = ConvertAsci(mot3)
     print("TRie jusqua : ", end_ord(L3))
