@@ -1,7 +1,6 @@
 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import random
 import copy as cp
 
@@ -360,49 +359,50 @@ def permutation(L, score_courant, dist):
 	[([1, 2, 3, 4, 6, 5], 5, 1)]
 
     """
+    sorted_to =  end_ord(L)  # Retourne l'indice du premier élément qui n'est plus dans l'ordre
+    Spe_cond = False  # Condition spéciale (cf : Cas n°5)
 
-	sorted_to =  end_ord(L)  # Retourne l'indice du premier élément qui n'est plus dans l'ordre
-	Spe_cond = False  # Condition spéciale (cf : Cas n°5)
+    if sorted_to != len(L):  # Cas n°1
+        min_letter= L.index(min(L[ sorted_to :])) 
+        if sorted_to != min_letter :  # Condition nécessaire pour dans le cas où le début de la séquence est déjà trié (Exemple : Mot2= "ABEDC") (Cas n°2 et n°3)
+            seq_to_permute =L[ sorted_to :min_letter + 1]  # Recupération de la liste à permuter jusqu'à l'élément minimale inclus (+1)
+        else :  # Cas n°4 et n°5
+            if min_letter != 0:  # Si la première n'est pas à la bonne position (Exemple : Mot1= "BCAED") (Cas n°4)
+                seq_to_permute =L[ : sorted_to  + 1]  # Récupéreration de la séquence jusqu'au premiere élément inclus
+            else :  # Si la première lettre est bien placée et si seulement la première (Exemple : Mot3="ACBDFE") (Cas n°5)
+                Spe_cond = True 
+                min_letter= L.index(min(L[ 1 :])) # Redéfinition du minimum
+                seq_to_permute =L[ 1: min_letter + 1] # La séquence est entre le deuxième élément et l'élément minimale
+    
+        seq_after_permutation =[]  # Liste des résultats d'une permuation 
+        res = []  # Liste de toute les permutations admises
 
-	if sorted_to != len(L):  # Cas n°1
-		min_letter= L.index(min(L[ sorted_to :]))
-		if sorted_to != min_letter :  # Condition nécessaire pour dans le cas où le début de la séquence est déjà trié (Exemple : Mot2= "ABEDC") (Cas n°2 et n°3)
-			seq_to_permute =L[ sorted_to :min_letter + 1]  # Recupération de la liste à permuter jusqu'à l'élément minimale inclus (+1)
-		else :  # Cas n°4 et n°5
-			if min_letter != 0:  # Si la première n'est pas à la bonne position (Exemple : Mot1= "BCAED") (Cas n°4)
-				seq_to_permute =L[ : sorted_to  + 1]  # Récupéreration de la séquence jusqu'au premiere élément inclus
-			else :  # Si la première lettre est bien placée et si seulement la première (Exemple : Mot3="ACBDFE") (Cas n°5)
-				Spe_cond = True
-				min_letter= L.index(min(L[ 1 :])) # Redéfinition du minimum
-				seq_to_permute =L[ 1: min_letter + 1] # La séquence est entre le deuxième élément et l'élément minimale
+        for i in range(len(seq_to_permute)-1):  # (-1) pour s'assurer que la séquence à inverser a une longueur supérieure à 1 
+            seq_inv = inversion(seq_to_permute[i:])  # inversion de la séquence à permuter 
 
-		seq_after_permutation =[]  # Liste des résultats d'une permuation
-		res = []  # Liste de toute les permutations admises
+            if sorted_to != min_letter :  # Dans le cas où le début de la séquence est déjà dans le bon ordre (Mot 2 et 3) (Cas n°2 , n°3 et n°5)
+                if Spe_cond == False:  # La lettre lettre minimale n'est pas la seule bien placée (Mot 2) (Cas n°2 , n°3)
+                    seq_after_permutation = L[:sorted_to+i] +seq_inv + L[min_letter+1:]
+                else : # Sinon la condition spéciale est vraie (Mot 3) (Cas n°5)
+                    first_elmt = [L[0]] # Nécessaire car sinon on traite un entier 
+                    seq_after_permutation = first_elmt+ seq_inv +  L[min_letter+1:]
 
-		for i in range(len(seq_to_permute)-1):  # (-1) pour s'assurer que la séquence à inverser a une longueur supérieure à 1
-			seq_inv = inversion(seq_to_permute[i:])  # inversion de la séquence à permuter
+            else :  # Si le début de la séquence n'est pas trié (Mot 1) (Cas n°4)
+                if len(seq_to_permute)== len(seq_inv): # Pour la première itération
+                    seq_after_permutation = seq_inv +L[min_letter+1:]
+                else :  # Dans les cas suivants
+                    seq_after_permutation = L[:len(seq_to_permute)-len(seq_inv)]+seq_inv+L[min_letter+1:]
 
-			if sorted_to != min_letter :  # Dans le cas où le début de la séquence est déjà dans le bon ordre (Mot 2 et 3) (Cas n°2 , n°3 et n°5)
-				if Spe_cond == False:  # La lettre lettre minimale n'est pas la seule bien placée (Mot 2) (Cas n°2 , n°3)
-					seq_after_permutation = L[:sorted_to+i] +seq_inv + L[min_letter+1:]
-				else : # Sinon la condition spéciale est vraie (Mot 3) (Cas n°5)
-					first_elmt = [L[0]] # Nécessaire car sinon on traite un entier
-					seq_after_permutation = first_elmt+ seq_inv +  L[min_letter+1:]
+            c_score = score(seq_after_permutation) # Calcul du nouveau score
+    
+            if c_score >= score_courant: # Si on a une amélioration ou une égalité 
+                res.append((seq_after_permutation , c_score , dist+1 )) # On retient la permutation         
+        return res
 
-			else :  # Si le début de la séquence n'est pas trié (Mot 1) (Cas n°4)
-				if len(seq_to_permute)== len(seq_inv): # Pour la première itération
-					seq_after_permutation = seq_inv +L[min_letter+1:]
-				else :  # Dans les cas suivants
-					seq_after_permutation = L[:len(seq_to_permute)-len(seq_inv)]+seq_inv+L[min_letter+1:]
-
-			c_score = score(seq_after_permutation) # Calcul du nouveau score
-
-			if c_score >= score_courant: # Si on a une amélioration ou une égalité
-				res.append((seq_after_permutation , c_score , dist+1 )) # On retient la permutation
-		return res
-    else:
+    else: # La séquence est déjà triée
         return []  # On retourne une liste vide 
 
+   
 
 def seq_aleatoire(l_ascii): # Louise
 	"""Mélange une listes.
