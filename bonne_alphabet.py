@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" Ce programme a été rédigé pour la recherche du nombre minimal d'inversion à réaliser pour 
+ordonner une séquence (attention problème NP complet)!
+"""
+
 import random
 import copy as cp
 import pandas as pd
@@ -102,7 +106,7 @@ def score(L):
 
     Cette fonction calcul le nombre de couples de lettres qui sont consécutives
     dans l'ordre alphabétiques et vérifie également si le min(L) est en position 0
-    et si le max(L) est en position -1. L est une liste de caractères convertis en
+    et si le max(L) est en position -1. `L est une liste de caractères convertis en
     code ascii.
 
     Parameters
@@ -686,7 +690,7 @@ def stat_parente(v_alea, d_obs):
 if __name__ == '__main__':    
 
     # ---------- TESTS DES FONCTIONS ---------- #
-    """     
+         
     print("\n MOT 1  ")
     mot1 = "bcaed" 
     L1 = ConvertAsci(mot1)
@@ -747,9 +751,7 @@ if __name__ == '__main__':
     print("P5", P5)
     print('\n')
     print('\n Nb inversion obs   :    \n' , nb_inversion("ailgkjmbcefhd")  )
-    """
 
-    '''
     print("\n  CHROMOSOME A 6 GENES  \n")
     g6 = "bcadfe"
     L6 = ConvertAsci(g6)
@@ -784,7 +786,7 @@ if __name__ == '__main__':
     res13 = list(data13.iloc[:,1])
     stat_aleatoire13 = stat_parente(res13, d_obs13)
     print("Stat 13 ", stat_aleatoire7 )
-    '''
+    
 
     print("\n  VERSION 1  : \n")
     print("\n  DROSOPHILES  : <3  \n")
@@ -900,7 +902,6 @@ if __name__ == '__main__':
     #res13 = list(data13.iloc[:,1])
     #stat_aleatoire_X = stat_parente(res13, d_obs_X)
     #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_X , "(sur %s sequence aleatoires) \n"%len(res13 ))
-
 
 
 
