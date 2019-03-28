@@ -295,7 +295,8 @@ def permutation(L, score_courant, dist):
 
     See Also
     --------
-    nb_inversion : Recherche itérative du nombre minimal d'inversion
+    nb_inversion   : Recherche itérative du nombre minimal d'inversion
+    permutation_v2 : Recherche exhaustive des inversions
 
     Notes
     -----
@@ -327,7 +328,21 @@ def permutation(L, score_courant, dist):
     aux éléments situés après le premier élément et l'élément
     minimal (sans prise en compte du premier).
     Exemple : ACBDFE -> Séquence à inverser = CB
+    
+    Attention cette fonction ne permet pas d'obtenir le nombre 
+    minimal d'inversion dans le cas où la séquence à inverser
+    n'est pas contenure entre la séquence déjà triée et la lettre
+    minimal.
 
+    Exemple:
+    Mot = A E B C F D G
+    1   : A B E C F D G
+    2   : A B C E F D G
+    3   : A B C D F E G
+    4   : A B C D E F G
+
+    Dans ce cas très précis le nombre d'inversion minimal est 
+    trois ainsi la version 2 de permutation doit être utilisée.
 
     Examples
     --------
@@ -394,13 +409,109 @@ def permutation(L, score_courant, dist):
         return []  # On retourne une liste vide 
 
 def permutation_v2(L, score_courant, dist):
-    """Cettte fonction est beacoup plus simple que la première version mais également beaucoup plus itérative.
-    Elle permet de générer TOUTES les permutations. Et fonctionne en particulier dans le cas du ChrIIIR.
-    Attention une permutation n'est pas retenue si la distance est inférieure ou égale à len(L)-1 qui correspond en fait
-    au nombre nécessaires si on réalise chaque inversion pour placer la lettre suivante dans le bon ordre.
-    Je sais pas si c'est très juste mais c'est un garde fou pour éviter des calculs trop long. Je me permise
-    d'écrire cette condition car si dist>len(L)-1 alors de toute façon la solution ne sera pas optimale. Cependant
-    ceci modifie beaucoup la façon de calculer la distance moyenne. """
+    """Recherche exhaustive des inversions.
+
+    Cette fonction prend en argument une liste d'entiers, son `score_courant`
+    (cf : `score`), ainsi que sa distance à l'origine (à la séquence initiale).
+    En effet elle est appellée par la procédure `nb_inversion`, qui détermine
+    le nombre d'inversions nécessaires pour trier une liste, ce nombre
+    d'inversions détermine la distance l'origine d'une possibilité.
+
+    Ainsi étant donné une liste et son état courant, `permutation` commence
+    par déterminer la séquence à inverser, si une inversion est nécessaire.
+    Pour `i` allant de 0 à la taille de la séquence à inverser -1, `permuatation`
+    genère l'inversion de taille `i`, et recalcul le score. Si celui-ci au
+    moins égal au `score_courant`, `permutation` retient la liste inversée,
+    son score et incrémente sa distance de 1.
+
+    Parameters
+    ----------
+    L : list
+        `L` est une liste d'entiers.
+    score_courant : int
+        Score de la liste (cf : `score`).
+    dist :  int
+        Distance à l'origine pour la séquence `L`, traduit le nombre d'inversions
+        qui ont déjà été réalisées sur `L`.
+
+    Returns
+    -------
+    res : liste de tuples
+        `res` est une liste contanant autant de tuple que d'inversions
+        conservées. Chaque tuple est constitué de la séquence après
+        inversion, de son score et de sa distance (`dist` + 1).
+
+    See Also
+    --------
+    nb_inversion   : Recherche itérative du nombre minimal d'inversion
+    permutation_v2 : Recherche exhaustive des inversions
+
+    Notes
+    -----
+    Étant donné que cette fonction fait appel à `nb_inversion`, elle ne peut
+    être appliquée que pour des listes de petite taille, afin de garantir
+    l'éxécution du calcul dans un temps raisonnable.
+
+    `permutation` gère les cas suivants :
+    1 : Si `L` est déjà triée une liste vide est renvoyée.
+
+    2 : Si seulement le début de `L` est trié la séquence à
+    inverser correspond aux éléments situés après le dernier
+    élément dans le bon ordre.
+    Exemple : ABEDC -> Séquence à inverser = EDC
+
+    3 : Si le début de la séquence n'est pas trié alors
+    la séquence à inverser correspond à l'ensemble des éléments
+    situés avant l'élément minimal.
+    Exemple : EDABC -> Séquence à inverser = EDA
+
+    4 : Si les premiers éléments de `L` sont successif mais
+    si le premier élément n'est pas bien placé alors la séquence
+    à inverser correspond à l'ensemble des éléments situés en
+    amont du premier élément.
+    Exemple : BCAED -> Séquence à inverser = BCA
+
+    5 :  Si la première lettre est bien placée et si seulement
+    la première l'est alors la séquence à inverser correspond
+    aux éléments situés après le premier élément et l'élément
+    minimal (sans prise en compte du premier).
+    Exemple : ACBDFE -> Séquence à inverser = CB
+    
+    Attention cette fonction ne permet pas d'obtenir le nombre 
+    minimal d'inversion dans le cas où la séquence à inverser
+    n'est pas contenure entre la séquence déjà triée et la lettre
+    minimal.
+
+    Exemple:
+    Mot = A E B C F D G
+    1   : A B E C F D G
+    2   : A B C E F D G
+    3   : A B C D F E G
+    4   : A B C D E F G
+
+    Dans ce cas très précis le nombre d'inversion minimal est 
+    trois ainsi la version 2 de permutation doit être utilisée.
+
+    Examples
+    --------
+    >>> L1 = [1,2,5,4,3]
+    >>> S1 = score(L1)
+    >>> permutation(L1,S1,0)  # Cas n°2
+    [([1, 2, 3, 4, 5], 6, 1)]
+    >>> L2 = [5,4,1,2,3]
+    >>> S2 = score(L2)
+    >>> permutation(L2,S2,0)  # Cas n°3
+    [([1, 4, 5, 2, 3], 3, 1)]
+    >>> L3 = [2,3,1,5,4]
+    >>> S3 = score(L3)
+    >>> permutation(L3,S3,0)  # Cas n°4
+    [([1, 3, 2, 5, 4], 3, 1), ([2, 1, 3, 5, 4], 2, 1)]
+    >>> L4 = [1,3,2,4,6,5]
+    >>> S4 = score(L4)
+    >>> permutation(L4,S4,0)  # Cas n°5
+    [([1, 2, 3, 4, 6, 5], 5, 1)]
+
+    """
 
     sorted_to =  end_ord(L)
     n = len(L)
@@ -452,7 +563,7 @@ def seq_aleatoire(l_ascii):
     random.shuffle(l_ascii)
     return l_ascii
 
-def scenario_aleatoire(l,runs, write, file_name=None):
+def scenario_aleatoire(l,n, write, file_name=None):
     """Recherche du nombre de d'inversions minimal sur suites aléatoires.
 
     Cette fonction prend en argument une liste d'entiers, elle la mélange
@@ -461,7 +572,8 @@ def scenario_aleatoire(l,runs, write, file_name=None):
     liste de taille `n` contenant le nombre d'inversions minimal trouvé
     pour chaque test, ainsi que le nombre moyen d'inversions obtenu pour
     une liste de taille `l`. L'utilisateur peut choisir d'enregistrer les
-    résultats dans un fichier texte pour cela il doit 
+    résultats dans un fichier texte pour cela il doit préciser le non du 
+    fichier. 
 
     Parameters
     ----------
@@ -469,7 +581,10 @@ def scenario_aleatoire(l,runs, write, file_name=None):
         `l` est une liste d'entiers.
     n : int
         `n` nombre d'itérations à effectuer.
-
+    write : bool
+        Ecriture des résultats
+    file_name : 
+        Nom du fichier des résultat si write = True
     Returns
     -------
     res : list
@@ -500,7 +615,7 @@ def scenario_aleatoire(l,runs, write, file_name=None):
         f.close()
 
     res =[]
-    for i in range(runs):
+    for i in range(n):
         L = seq_aleatoire(l)
         c_res = nb_inversion(L)
         res.append(c_res)
