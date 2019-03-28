@@ -284,7 +284,7 @@ def permutation(L, score_courant, dist):
 	>>> S4 = score(L4)
 	>>> permutation(L4,S4,0)  # Cas n°5
 	[([1, 2, 3, 4, 6, 5], 5, 1)]
-	
+
     """
 
 	sorted_to =  end_ord(L)  # Retourne l'indice du premier élément qui n'est plus dans l'ordre
@@ -328,7 +328,7 @@ def permutation(L, score_courant, dist):
 		return res
 
 	else: # La séquence est déjà triée
-		return []	# On retourne une liste vide 
+		return []  # On retourne une liste vide 
 
 			
 def seq_aleatoire(l_ascii): # Louise
