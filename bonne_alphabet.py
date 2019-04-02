@@ -1,13 +1,10 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Ce programme a été rédigé pour la recherche du nombre minimal d'inversion à réaliser pour 
-ordonner une séquence (attention problème NP complet)!
-"""
-
+from __future__ import division
 import random
 import copy as cp
 import pandas as pd
-
+""" Ce programme a été rédigé pour la recherche du nombre minimal d'inversion à réaliser pour 
+ordonner une séquence (attention problème NP complet)!"""
 def inversion(L):
     """Inverse les éléments d'une liste.
 
@@ -23,30 +20,31 @@ def inversion(L):
     -------
     Lc : array_like
         `Lc` est équivalente à liste `L` lue de droite à gauqhe.
-
+        
     Examples
     --------
     >>> L = [1,2,3,4,5]
     >>> inversion(L)
     [5, 4, 3, 2, 1]
     """
+
     Lc = cp.deepcopy(L)
     return Lc[::-1]
 
 def ConvertAsci(L):
-    """Converti les element d'une liste en l_ascii.
-
-    Cette fonction convertie une liste de caracteres en liste de code ascii.
+    """Converti les éléments d'une liste de lettres en entiers
+    
+    Cette fonction converti une liste de caractères en une liste d'entier.
 
     Parameters
     ----------
     L : list
-        `L` est une liste de caracteres.
+        `L` est une liste de caractères
 
     Returns
     -------
     La : list
-        `La` est une liste de code ascii, c'est la liste `L`convertie en ascii.
+        `La` est une liste d'entiers correspondant aux codes ascii de la liste `L`
 
     Examples
     --------
@@ -55,6 +53,7 @@ def ConvertAsci(L):
     [97, 98, 99, 101, 106]
 
     """
+    assert(type(L[0])== str)
     La = []
     for i in range(len(L)):
         La.append(ord(L[i]))
@@ -92,6 +91,7 @@ def adjacent(L):
     []
 
     """
+    assert(type(L[0])== int)
     adj=[] 
     for i in range(len(L)-1):
         if L[i]==L[i+1]+1 : 
@@ -102,37 +102,38 @@ def adjacent(L):
 
 
 def score(L):
-    """Calcul un score de ressamblance à l'ordre alphabétique pour une liste de code ascii.
+    """Calcul un score d'ordonnancement d'une liste d'entiers
 
     Cette fonction calcul le nombre de couples de lettres qui sont consécutives
-    dans l'ordre alphabétiques et vérifie également si le min(L) est en position 0
-    et si le max(L) est en position -1. `L est une liste de caractères convertis en
+    dans l'ordre alphabétique et vérifie également si le min(L) est en position 0
+    et si le max(L) est en position -1. `L` est une liste de caractères convertis en
     code ascii.
-
+    
     Parameters
     ----------
-    L : list
-        `L` est une liste d'entiers.
+    L : list 
+        `L` est une liste d'entiers
 
     Returns
     -------
-    score : entier
-        `score` est un entier proportionnel à la resemblance de la liste `L`à l'odre alphabétique.
+    score : int
+        `score` est un etier proportionnel à l'ordonnancement de la liste `L`
 
     See Also
     --------
-    adjacent : Recherche l'ensemble des éléments consécutifs d'une listes d'entiers.
+    adjacent : Recherche de l'ensemble des éléments consécutifs d'une liste d'entiers.
 
     Examples
     --------
-    >>> L1 = [97, 98, 99, 101, 106]
+    >>> L1 = [97,98,99,101,106]
     >>> score(L1)
     4
     >>> L3 = [2,4,1,3]
     >>> score(L3)
     0
-
+    
     """
+    assert(type(L[0])== int)
     score=len(adjacent(L))
     if L.index(min(L))==0:
         score+=1
@@ -178,6 +179,7 @@ def end_ord(l) :
     0
 
     """
+    assert(type(l[0])== int)
     ind=0
     cond = True
     while cond : 
@@ -205,7 +207,7 @@ def nb_inversion(l, v2 = False):
     Parameters
     ----------
     l : list
-        `l` est une liste de caractères.
+        `l` est une chaîne de caractères.
     v2 : bool
         `v2` est un booleen qui vaut False par défaut et entraine l'utilisation de la fonction permutation. Si l'utilisateur donne en argument 
         v2=True alors c'est la fonction permutation_v2 qui est appelée.
@@ -225,22 +227,23 @@ def nb_inversion(l, v2 = False):
     Examples
     --------
     >>> l1 = "abcdef"
-    >>> nb_inversion(L1)
+    >>> nb_inversion(l1)
     0
     >>> l2 = "cdab"
-    >>> nb_inversion(L2)
+    >>> nb_inversion(l2)
     2
     >>> l3 = "aebcfdg"
-    >>> nb_inversion(L1,v2=False)
+    >>> nb_inversion(l3,v2=False)
     4
-    >>> nb_inversion(L1)
+    >>> nb_inversion(l3)
     4
-    >>> nb_inversion(L2,v2=True)
-    3
-    >>> nb_inversion(L2,True)
-    3
+    >>> nb_inversion(l2,v2=True)
+    2
+    >>> nb_inversion(l2,True)
+    2
     
     """
+    
     if isinstance(l, str):
         l_ascii= ConvertAsci(l) #converti en liste de code ascii
     else:
@@ -280,7 +283,7 @@ def nb_inversion(l, v2 = False):
     return min_nb_inv
 
 def permutation(L, score_courant, dist):  
-    """Recherche les inversions possibles permettant de conserver ou d'améliorer le score.
+    """Recherche exhaustive des inversions.
 
     Cette fonction prend en argument une liste d'entiers, son `score_courant`
     (cf : `score`), ainsi que sa distance à l'origine (à la séquence initiale).
@@ -383,7 +386,8 @@ def permutation(L, score_courant, dist):
     [([1, 2, 3, 4, 6, 5], 5, 1)]
 
     """
-
+    assert(type(L[0])== int)
+    assert(type(score_courant)==int)
     sorted_to =  end_ord(L)  # Retourne l'indice du premier élément qui n'est plus dans l'ordre
     Spe_cond = False  # Condition spéciale (cf : Cas n°5)
 
@@ -531,7 +535,7 @@ def permutation_v2(L, score_courant, dist):
     [([1, 2, 3, 4, 6, 5], 5, 1)]
 
     """
-
+    
     sorted_to =  end_ord(L)
     n = len(L)
     min_letter= L.index(min(L[ sorted_to :]))
@@ -571,12 +575,6 @@ def seq_aleatoire(l_ascii):
     -------
     l_ascii : list
         `l_ascii` est une liste d'entiers.
-
-    Examples
-    --------
-    >>> L1 = [3,4,1,2]
-    >>> seq_aleatoire(L1)
-    [2,4,3,1]
 
     """
     random.shuffle(l_ascii)
@@ -621,13 +619,9 @@ def scenario_aleatoire(l,n, write, file_name=None):
     être appliquée que pour des listes de petite taille, afin de garantir
     l'éxécution du calcul dans un temps raisonnable.
 
-    Examples
-    --------
-    >>> L1 = [1,2,3,4,5]
-    >>> scenario_aleatoire(L1,10)
-    ([2, 3, 3, 3, 2, 2, 3, 3, 2, 3], 2.6)
 
     """
+    
     if write == True :
         with open(file_name, 'a') as f:
             f.write("Nb_itertion \t Min_inv \n")
@@ -652,7 +646,7 @@ def stat_parente(v_alea, d_obs):
 
     Cette fonction retourne la probabilité d'observer une distance moyenne équivalente à d_obs sous l'hypothèse du hasard.
     Elle prend en argument le nombre minimal d'inversions néecessaires pour ordonner la séquence de gène (d_obs), et une liste de
-    taille |l| qui contient le nombre minimal d'inversions néecessaires pour ordonner l séquences aléatoires de  taille équivalente
+    taille l qui contient le nombre minimal d'inversions néecessaires pour ordonner l séquences aléatoires de  taille équivalente
     à la séquence d'intérêt. 
 
     Parameters
@@ -667,6 +661,18 @@ def stat_parente(v_alea, d_obs):
     prob : list
         Liste contenant le nombre minimal d'inversion obtenu pour les `n`
         répétitions.
+
+    Notes
+    -----
+    La statistique retournée correspond à une proportion telle que :
+
+    .. math::
+    
+        P     =  \\frac{X}{N} 
+       
+
+    Où X est le nombre d'inversions aléatoires inférieures à l'observation, et N le nombre total de simulations éffectuées qui
+    correspond à la taille de `v_alea`
 
     Examples
     --------
@@ -689,219 +695,5 @@ def stat_parente(v_alea, d_obs):
 
 if __name__ == '__main__':    
 
-    # ---------- TESTS DES FONCTIONS ---------- #
-         
-    print("\n MOT 1  ")
-    mot1 = "bcaed" 
-    L1 = ConvertAsci(mot1)
-    P1  = permutation(L1, score(L1), 0)
-    print("Adjacence L1  : ", adjacent(L1))
-    print("score  ", score(L1))
-    print("Trie jusqu a : ", end_ord(L1))
-    print("Permutation P1 " , P1)
-
-
-    print("\n MOT 2  ")
-    mot2 = "abedc" 
-    L2 = ConvertAsci(mot2)
-    P2  = permutation(L2, score(L2),0)
-    print("P2", P2)
-
-
-
-    print("\n MOT 3  ")
-    mot3 = "acbdfe" 
-    L3 = ConvertAsci(mot3)
-    print("Adjacence L3  : ", adjacent(L3))
-    print("score  ", score(L3))
-    P3  = permutation(L3, score(L3),0)
-    print("P3", P3)
-
-
-    print("\n MOT 3  ")
-    mot3 = "bcadfegih"
-    L3 = ConvertAsci(mot3)
-    print("TRie jusqua : ", end_ord(L3))
-    P3  = permutation(L3, score(L3),0)
-    print("P1", P3)
-    print("\n")
-    print('\n  Nb inversion obs   :    \n' , nb_inversion("bcadfe")  )
-
-
-
-    print("\n MOT Exemple cours   ")
-    mot4 = "lhfebadckijgm"
-    L4 = ConvertAsci(mot4)
-    print("Trie jusqua : ", end_ord(L4))
-    P4  = permutation(L4, score(L4),0)
-    print("P4", P4)
-
-    print('\n')
-    print('\n')
-    print('\n Nb inversion obs   :    \n' , nb_inversion("lhfebadckijgm")  )
-    print('\n scenario_aleatoire de L4  :',  scenario_aleatoire(L4,4)[0], 'Distance moy', scenario_aleatoire(L4,4)[1] )
-
-
-    # Un peu plus long 
-    print('\n')
-    mot5 = "ailgkjmbcefhd"
-    L5= ConvertAsci(mot5)
-    print("Trie jusqua : ", end_ord(L5))
-    P5 = permutation(L5, score(L5),0)
-    print("P5", P5)
-    print('\n')
-    print('\n Nb inversion obs   :    \n' , nb_inversion("ailgkjmbcefhd")  )
-
-    print("\n  CHROMOSOME A 6 GENES  \n")
-    g6 = "bcadfe"
-    L6 = ConvertAsci(g6)
-    S6 = score(L6)
-    d_obs6 = nb_inversion(L6 )
-    print('D obs', d_obs6)
-    print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L6,500, True , "6_genes.txt")[1] )
-    alea6 = scenario_aleatoire(L6,50, True , "6_genes.txt")[0] 
-    stat_aleatoire6 = stat_parente(alea6, d_obs6)
-    print("Stat 6 ", stat_aleatoire6 )
-
-    print("\n  CHROMOSOME A 7 GENES  \n")
-    g7 = "bcadfeg"
-    L7 = ConvertAsci(g7)
-    S7 = score(L7)
-    d_obs7 = nb_inversion(L7)
-    print('D obs', d_obs7)
-    print("\n Distance moyenne d'inversions calculée sur 50 scenari : d_moy=", scenario_aleatoire(L7,50, False )[1] )
-    alea7 = scenario_aleatoire(L7,500, True , "6_genes.txt")[0] 
-    stat_aleatoire7 = stat_parente(alea7, d_obs7)
-    print("Stat 6 ", stat_aleatoire7 )
-
-    print("\n  CHROMOSOME A 13 GENES  \n")
-    g13 = "abcdefghijklm"
-    L13 = ConvertAsci(g13)
-    S13 = score(L13)
-    d_obs13 = nb_inversion(L13 )
-    print('D obs', d_obs13)
-    #print("\n Distance moyenne d'inversions calculée sur 20 scenari : d_moy=",  scenario_aleatoire(L13,20, True,"13_genes.txt" )[1] )
-
-    data13 = pd.read_csv('13_genes.txt', header = None, sep='\t')
-    res13 = list(data13.iloc[:,1])
-    stat_aleatoire13 = stat_parente(res13, d_obs13)
-    print("Stat 13 ", stat_aleatoire7 )
-    
-
-    print("\n  VERSION 1  : \n")
-    print("\n  DROSOPHILES  : <3  \n")
-
-    chrIIIR= "aebcfdg"
-    print("Organisation du chromosome III (r) : ", chrIIIR)
-    LIIIR = ConvertAsci(chrIIIR)
-    print('SCORE CHR ,', score(LIIIR))
-    d_obs_IIIR = nb_inversion(LIIIR)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_IIIR)
-    alea_IIIR = scenario_aleatoire(LIIIR,500, False)[0] 
-    stat_aleatoire_IIIR = stat_parente(alea_IIIR, d_obs_IIIR)
-    print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIIR , "(sur %s sequence aleatoires) \n"%len(alea_IIIR ))
-
-
-
-    chrIIIL= "CFEBAD"
-    print("Organisation du chromosome III (l) : ", chrIIIL)
-    LIIIL = ConvertAsci(chrIIIL)
-    d_obs_IIIL = nb_inversion(LIIIL)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_IIIL)
-    alea_IIIL = scenario_aleatoire(LIIIL,500, False)[0] 
-    stat_aleatoire_IIIL = stat_parente(alea_IIIL, d_obs_IIIL)
-    print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIIL , "(sur %s sequence aleatoires) \n"%len(alea_IIIL ))
-
-
-    chrIIR= "ACEBFD"
-    print("Organisation du chromosome II (r) : ", chrIIR)
-    LIIR = ConvertAsci(chrIIR)
-    d_obs_IIR = nb_inversion(LIIR)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_IIR)
-    alea_IIR = scenario_aleatoire(LIIR,500, False)[0] 
-    stat_aleatoire_IIR = stat_parente(alea_IIR, d_obs_IIR)
-    print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIR , "(sur %s sequence aleatoires) \n"%len(alea_IIR ))
-
-
-    chrIIL= "DEFACB"
-    print("Organisation du chromosome II (l) : ", chrIIL)
-    LIIL = ConvertAsci(chrIIL)
-    d_obs_IIL = nb_inversion(LIIL)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_IIL)
-    alea_IIL = scenario_aleatoire(LIIL,500, False)[0] 
-    stat_aleatoire_IIL = stat_parente(alea_IIL, d_obs_IIL)
-    print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIL , "(sur %s sequence aleatoires) \n"%len(alea_IIL ))
-
-
-    chrX= "LHFEBADCKIJGM"
-    print("Organisation du chromosome X : ", chrX)
-    LX = ConvertAsci(chrX)
-    d_obs_X = nb_inversion(LX)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_X)
-    #alea_X = scenario_aleatoire(LX,500, False)[0] 
-    data13 = pd.read_csv('13_genes.txt', header = None, sep='\t')
-    res13 = list(data13.iloc[:,1])
-    stat_aleatoire_X = stat_parente(res13, d_obs_X)
-    print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_X , "(sur %s sequence aleatoires) \n"%len(res13 ))
-
-
-
-
-
-
-    print("\n  VERSION 2  : \n")
-    print("\n  DROSOPHILES  : <3  \n")
-
-    chrIIIR= "aebcfdg"
-    print("Organisation du chromosome III (r) : ", chrIIIR)
-    LIIIR = ConvertAsci(chrIIIR)
-    print('SCORE CHR ,', score(LIIIR))
-    d_obs_IIIR = nb_inversion_v2(LIIIR)
-    print('Pour le Chr III R  le nombre minimal d inversion est   : ', d_obs_IIIR)
-    #alea_IIIR = scenario_aleatoire(LIIIR,500, False)[0] 
-    #stat_aleatoire_IIIR = stat_parente(alea_IIIR, d_obs_IIIR)
-    #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIIR , "(sur %s sequence aleatoires) \n"%len(alea_IIIR ))
-
-
-    chrIIIL= "CFEBAD"
-    print("Organisation du chromosome III (l) : ", chrIIIL)
-    LIIIL = ConvertAsci(chrIIIL)
-    d_obs_IIIL = nb_inversion(LIIIL, True)
-    print('Pour le Chr III RL le nombre minimal d inversion est   : ', d_obs_IIIL)
-    #alea_IIIL = scenario_aleatoire(LIIIL,500, False)[0] 
-    #stat_aleatoire_IIIL = stat_parente(alea_IIIL, d_obs_IIIL)
-    #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIIL , "(sur %s sequence aleatoires) \n"%len(alea_IIIL ))
-
-
-    chrIIR= "ACEBFD"
-    print("Organisation du chromosome II (r) : ", chrIIR)
-    LIIR = ConvertAsci(chrIIR)
-    d_obs_IIR = nb_inversion(LIIR, True)
-    print('Pour le Chr II R  le nombre minimal d inversion est   : ', d_obs_IIR)
-    #alea_IIR = scenario_aleatoire(LIIR,500, False)[0] 
-    #stat_aleatoire_IIR = stat_parente(alea_IIR, d_obs_IIR)
-    #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIR , "(sur %s sequence aleatoires) \n"%len(alea_IIR ))
-
-
-    chrIIL= "DEFACB"
-    print("Organisation du chromosome II (l) : ", chrIIL)
-    LIIL = ConvertAsci(chrIIL)
-    d_obs_IIL = nb_inversion(LIIL, True)
-    print('Pour le Chr II L  le nombre minimal d inversion est   : ', d_obs_IIL)
-    #alea_IIL = scenario_aleatoire(LIIL,500, False)[0] 
-    #stat_aleatoire_IIL = stat_parente(alea_IIL, d_obs_IIL)
-    #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_IIL , "(sur %s sequence aleatoires) \n"%len(alea_IIL ))
-
-    chrX= "LHFEBADCKIJGM"
-    print("Organisation du chromosome X : ", chrX)
-    LX = ConvertAsci(chrX)
-    d_obs_X = nb_inversion(LX, True)
-    print('Pour le Chr X  le nombre minimal d inversion est  : ', d_obs_X)
-    #alea_X = scenario_aleatoire(LX,500, False)[0] 
-    #data13 = pd.read_csv('13_genes.txt', header = None, sep='\t')
-    #res13 = list(data13.iloc[:,1])
-    #stat_aleatoire_X = stat_parente(res13, d_obs_X)
-    #print("Probabilite qu'une telle distance soit due au hasard :  ", stat_aleatoire_X , "(sur %s sequence aleatoires) \n"%len(res13 ))
-
-
-
+    import doctest
+    doctest.testmod()
