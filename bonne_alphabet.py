@@ -290,7 +290,7 @@ def nb_inversion(l, v2 = False):
 
 
 def permutation(L, score_courant, dist):  
-    """Recherche exhaustive des inversions dans une liste d'entiers.
+    """Recherche presque exhaustive des inversions dans une liste d'entiers pour l'ordonner.
 
     Cette fonction prend en argument une liste d'entiers, son `score_courant`
     (cf : `score`), ainsi que sa distance à l'origine (i.e. à la séquence initiale).
@@ -440,20 +440,28 @@ def permutation(L, score_courant, dist):
 
 
 def permutation_v2(L, score_courant, dist):
-    """Recherche exhaustive des inversions.
+    """Recherche exhaustive des inversions pour l'ordonner.
 
     Cette fonction prend en argument une liste d'entiers, son `score_courant`
     (cf : `score`), ainsi que sa distance à l'origine (à la séquence initiale).
     En effet elle est appellée par la procédure `nb_inversion`, qui détermine
     le nombre d'inversions nécessaires pour trier une liste, ce nombre
-    d'inversions détermine la distance l'origine d'une possibilité.
+    d'inversions détermine la distance l'origine d'une possibilité. 
+    Cette fonction est donc semblable à `permutation`. Cette version permet 
+    toutefois une recherche exhaustive de toutes les permutations. Le nombre 
+    de combinaison pouvant être relativement grand, cette fonction n'est adaptée
+    que pour des séquences de taille inférieurs 8. 
 
-    Ainsi étant donné une liste et son état courant, `permutation` commence
-    par déterminer la séquence à inverser, si une inversion est nécessaire.
-    Pour `i` allant de 0 à la taille de la séquence à inverser -1, `permuatation`
-    genère l'inversion de taille `i`, et recalcul le score. Si celui-ci au
-    moins égal au `score_courant`, `permutation` retient la liste inversée,
-    son score et incrémente sa distance de 1.
+    Ainsi étant donné une liste et son état courant, `permutation_v2` recherhe
+    la partie de la séquence qui  a déjà été ordonnée, puis génère toute les 
+    inversion possible. Une inversion sera retenue si et seulement si elle permet
+    de conserver ou d'augmenter le score.
+
+    La fonction `permutation_v2` retourne ainsi la liste de toute les inversions. 
+    À chaque élément de la liste des résultats est associé la séquence d'entiers,
+    le score associé à cette séquence et la distance à l'origine. En effet la 
+    distance de chaque séquences retenue est incrémentée d'une unité, étant 
+    donné qu'elles sont la résultante d'une inversion.
 
     Parameters
     ----------
@@ -475,53 +483,29 @@ def permutation_v2(L, score_courant, dist):
     See Also
     --------
     nb_inversion   : Recherche itérative du nombre minimal d'inversion
-    permutation_v2 : Recherche exhaustive des inversions
+    permutation    : Recherche exhaustive des inversions
 
     Notes
     -----
     Étant donné que cette fonction fait appel à `nb_inversion`, elle ne peut
     être appliquée que pour des listes de petite taille, afin de garantir
-    l'éxécution du calcul dans un temps raisonnable.
+    l'éxécution du calcul dans un temps raisonnable. Ceci est particulièrement
+    pour cette deuxième version de `permutation_v2`.
 
-    `permutation` gère les cas suivants :
-    1 : Si `L` est déjà triée une liste vide est renvoyée.
-
-    2 : Si seulement le début de `L` est trié la séquence à
-    inverser correspond aux éléments situés après le dernier
-    élément dans le bon ordre.
-    Exemple : ABEDC -> Séquence à inverser = EDC
-
-    3 : Si le début de la séquence n'est pas trié alors
-    la séquence à inverser correspond à l'ensemble des éléments
-    situés avant l'élément minimal.
-    Exemple : EDABC -> Séquence à inverser = EDA
-
-    4 : Si les premiers éléments de `L` sont successif mais
-    si le premier élément n'est pas bien placé alors la séquence
-    à inverser correspond à l'ensemble des éléments situés en
-    amont du premier élément.
-    Exemple : BCAED -> Séquence à inverser = BCA
-
-    5 :  Si la première lettre est bien placée et si seulement
-    la première l'est alors la séquence à inverser correspond
-    aux éléments situés après le premier élément et l'élément
-    minimal (sans prise en compte du premier).
-    Exemple : ACBDFE -> Séquence à inverser = CB
+    Etant donné une séquence `L` `permutation_v2`, recherche la partie déjà 
+    triée, de taille N. Pour la séquence à trier elle génere toutes les permutation
+    possibles. Pour ce faire elle commence donc à itérer à partir de la première 
+    lettre non triée d'indice N+1 , et génère toutes les permutations pour cette 
+    position. Puis elle recommence pour la deuxième lettre non triée etc...
+    Les inversions testées peuvent être résumées  telles que :
+    .. math::
     
-    Attention cette fonction ne permet pas d'obtenir le nombre 
-    minimal d'inversion dans le cas où la séquence à inverser
-    n'est pas contenure entre la séquence déjà triée et la lettre
-    minimal.
+        perm(i,N+j) = \\sum_{i=1}^{i=L-(N+j-1)} inv(L[N+j : N+j+i])
 
-    Exemple:
-    Mot = A E B C F D G
-    1   : A B E C F D G
-    2   : A B C E F D G
-    3   : A B C D F E G
-    4   : A B C D E F G
-
-    Dans ce cas très précis le nombre d'inversion minimal est 
-    trois ainsi la version 2 de permutation doit être utilisée.
+    Dans cette formule i correspond à la i ème permutation, et N+j
+    à la position de lettre non triée considérée. À chaque itération les éléments
+    d'indice compris entre (N+j) et  et (N+j+i) sont inversés
+    
 
     Examples
     --------
