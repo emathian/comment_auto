@@ -3,8 +3,10 @@ from __future__ import division
 import random
 import copy as cp
 import pandas as pd
+
 """ Ce programme a été rédigé pour la recherche du nombre minimal d'inversion à réaliser pour 
 ordonner une séquence (attention problème NP complet)!"""
+
 def inversion(L):
     """Inverse les éléments d'une liste.
 
@@ -31,20 +33,21 @@ def inversion(L):
     Lc = cp.deepcopy(L)
     return Lc[::-1]
 
+
 def ConvertAsci(L):
-    """Converti les éléments d'une liste de lettres en entiers
+    """Converti les éléments d'une liste de lettres en entiers.
     
-    Cette fonction converti une liste de caractères en une liste d'entier.
+    Cette fonction converti une liste de caractères en une liste d'entier correspondant à leur code ascii.
 
     Parameters
     ----------
     L : list
-        `L` est une liste de caractères
+        `L` est une liste de caractères.
 
     Returns
     -------
     La : list
-        `La` est une liste d'entiers correspondant aux codes ascii de la liste `L`
+        `La` est une liste d'entiers correspondant aux codes ascii de la liste `L`.
 
     Examples
     --------
@@ -58,6 +61,7 @@ def ConvertAsci(L):
     for i in range(len(L)):
         La.append(ord(L[i]))
     return La
+
 
 def adjacent(L):
     """Recherche l'ensemble des éléments consécutifs d'une listes d'entiers.
@@ -102,7 +106,7 @@ def adjacent(L):
 
 
 def score(L):
-    """Calcul un score d'ordonnancement d'une liste d'entiers
+    """Calcul un score d'ordonnancement d'une liste d'entiers.
 
     Cette fonction calcul le nombre de couples de lettres qui sont consécutives
     dans l'ordre alphabétique et vérifie également si le min(L) est en position 0
@@ -112,12 +116,12 @@ def score(L):
     Parameters
     ----------
     L : list 
-        `L` est une liste d'entiers
+        `L` est une liste d'entiers.
 
     Returns
     -------
     score : int
-        `score` est un etier proportionnel à l'ordonnancement de la liste `L`
+        `score` est un etier proportionnel à l'ordonnancement de la liste `L`.
 
     See Also
     --------
@@ -141,11 +145,12 @@ def score(L):
         score+=1
     return score
 
+
 def end_ord(l) :
     """Recherche l'indice du premier élément non trié.
 
     Cette fonction recherche le premier élément d'une liste d'entiers
-    qui n'est pas dans l'ordre numérique et retourne son indice. Si la
+    qui n'est pas dans l'ordre numérique croissant et retourne son indice. Si la
     valeur retounée est égale à zéro alors les deux premiers éléments
     ne sont pas dans le bonne ordre, la suite des éléments étant possiblement
     triés. Si la valeur retournée est égale à la longueur de la liste,
@@ -159,7 +164,7 @@ def end_ord(l) :
     Returns
     -------
     int
-        Indice du premier élément mal positionné de `l`.
+        `int` est l'indice du premier élément mal positionné de `l`.
 
     See Also
     --------
@@ -196,21 +201,22 @@ def end_ord(l) :
     else :
         return ind+1
 
+
 def nb_inversion(l, v2 = False):
     """Calcul le nombre d'inversion nécéssaire dans une chaine de caractères composées de lettre de l'alphabet consécutives pour atteindre l'ordre alphabétique.
 
-    Cette fonction calcul le nombre minimum d'inversions necessaires pour obtenir une liste dans l'ordre alphabetiqueprend
-    dans une chaine de caractères composées de lettre de l'alphabet consécutives. L'utilisateur peut choisir d'appeler une version v2
-    de la fonction permutation dans le cas où la chaine de caractère est courte ou si il lance la fonction scenario_aleatoire. Par défaut 
-    v2=False, pour utiliser v2 donner en paramètre v2=True.
+    Cette fonction calcul le nombre minimum d'inversions necessaires pour obtenir une chaine de caractère odonnée dans une chaine 
+    de caractères composées de lettre de l'alphabet consécutives. L'utilisateur peut choisir d'appeler une version v2
+    de la fonction permutation dans le cas où la chaine de caractère est courte ou si il lance la fonction scenario_aleatoire. 
+    Par défaut v2=False, pour utiliser v2 donner en paramètre v2=True.
 
     Parameters
     ----------
     l : list
         `l` est une chaîne de caractères.
     v2 : bool
-        `v2` est un booleen qui vaut False par défaut et entraine l'utilisation de la fonction permutation. Si l'utilisateur donne en argument 
-        v2=True alors c'est la fonction permutation_v2 qui est appelée.
+        `v2` est un booleen qui vaut False par défaut et entraine l'utilisation de la fonction permutation. 
+        Si l'utilisateur donne en argument v2=True alors c'est la fonction permutation_v2 qui est appelée.
 
     Returns
     -------
@@ -219,7 +225,7 @@ def nb_inversion(l, v2 = False):
 
     See Also
     --------
-    ConvertAsci : Converti les element d'une liste en l_ascii.
+    ConvertAsci : Converti les elements d'une liste en l_ascii.
     score : Calcul un score de ressamblance à l'ordre alphabétique pour une liste de code ascii.
     permutation : Recherche itérative de toutes les inversions permettant d'améliorer le score.
     permutation_v2 : Recherche exhaustive des inversions.
@@ -282,11 +288,12 @@ def nb_inversion(l, v2 = False):
         min_nb_inv = 0
     return min_nb_inv
 
+
 def permutation(L, score_courant, dist):  
-    """Recherche exhaustive des inversions.
+    """Recherche exhaustive des inversions dans une liste d'entiers.
 
     Cette fonction prend en argument une liste d'entiers, son `score_courant`
-    (cf : `score`), ainsi que sa distance à l'origine (à la séquence initiale).
+    (cf : `score`), ainsi que sa distance à l'origine (i.e. à la séquence initiale).
     En effet elle est appellée par la procédure `nb_inversion`, qui détermine
     le nombre d'inversions nécessaires pour trier une liste, ce nombre
     d'inversions détermine la distance l'origine d'une possibilité.
@@ -305,7 +312,7 @@ def permutation(L, score_courant, dist):
     score_courant : int
         Score de la liste (cf : `score`).
     dist :  int
-        Distance à l'origine pour la séquence `L`, traduit le nombre d'inversions
+        `dist` est la distance à l'origine pour la séquence `L`, traduit le nombre d'inversions
         qui ont déjà été réalisées sur `L`.
 
     Returns
@@ -317,8 +324,8 @@ def permutation(L, score_courant, dist):
 
     See Also
     --------
-    nb_inversion   : Recherche itérative du nombre minimal d'inversion
-    permutation_v2 : Recherche exhaustive des inversions
+    nb_inversion   : Recherche itérative du nombre minimal d'inversion.
+    permutation_v2 : Recherche exhaustive des inversions.
 
     Notes
     -----
@@ -327,9 +334,9 @@ def permutation(L, score_courant, dist):
     l'éxécution du calcul dans un temps raisonnable.
 
     `permutation` gère les cas suivants :
-    1 : Si `L` est déjà triée une liste vide est renvoyée.
+    1 : Si `L` est déjà triée alors une liste vide est renvoyée.
 
-    2 : Si seulement le début de `L` est trié la séquence à
+    2 : Si et seulement si le début de `L` est trié la séquence à
     inverser correspond aux éléments situés après le dernier
     élément dans le bon ordre.
     Exemple : ABEDC -> Séquence à inverser = EDC
@@ -430,6 +437,7 @@ def permutation(L, score_courant, dist):
 
     else: # La séquence est déjà triée
         return []  # On retourne une liste vide 
+
 
 def permutation_v2(L, score_courant, dist):
     """Recherche exhaustive des inversions.
@@ -555,13 +563,13 @@ def permutation_v2(L, score_courant, dist):
                         score_c = score(seq_after_permutation)
                         if score_c >= score_courant :
                             res.append((seq_after_permutation , score_c , dist+1 ))     
-
         return res
     else :
         return []
 
+
 def seq_aleatoire(l_ascii):
-    """Mélange une listes.
+    """Mélange une liste.
 
     Cette fonction permet de générer une séquence alétoire de même
     composition que celle passée en argument.
@@ -574,14 +582,15 @@ def seq_aleatoire(l_ascii):
     Returns
     -------
     l_ascii : list
-        `l_ascii` est une liste d'entiers.
+        `l_ascii` est une liste d'entiers qui correspond à la liste donnée en argument ordonnée différemment.
 
     """
     random.shuffle(l_ascii)
     return l_ascii
 
+
 def scenario_aleatoire(l,n, write, file_name=None):
-    """Recherche du nombre de d'inversions minimal sur suites aléatoires.
+    """Recherche du nombre d'inversions minimal dans une liste aléatoires d'entiers consecutifs.
 
     Cette fonction prend en argument une liste d'entiers, elle la mélange
     puis calcul le nombre d'inversions minimal nécessaire la trier. Ce
@@ -599,13 +608,13 @@ def scenario_aleatoire(l,n, write, file_name=None):
     n : int
         `n` nombre d'itérations à effectuer.
     write : bool
-        Ecriture des résultats
+        `write` est un booléen si la fonction écrit ou non les résultats dans un fichier.
     file_name : 
-        Nom du fichier des résultat si write = True
+        `file_name` est le nom du fichier qui contiendra les résultat si write = True.
     Returns
     -------
     res : list
-        Liste contenant le nombre minimal d'inversion obtenu pour les `n`
+        `res` est une liste contenant le nombre minimal d'inversion obtenu pour les `n`
         répétitions.
 
     See Also
@@ -619,9 +628,7 @@ def scenario_aleatoire(l,n, write, file_name=None):
     être appliquée que pour des listes de petite taille, afin de garantir
     l'éxécution du calcul dans un temps raisonnable.
 
-
     """
-    
     if write == True :
         with open(file_name, 'a') as f:
             f.write("Nb_itertion \t Min_inv \n")
@@ -641,12 +648,13 @@ def scenario_aleatoire(l,n, write, file_name=None):
     moy_dist= sum(res)/len(res)
     return res, moy_dist
 
-def stat_parente(v_alea, d_obs):
-    """Calcul la probabilité d'observer une distance moyenne équivalente à d_obs sous l'hypothèse du hasard.
 
-    Cette fonction retourne la probabilité d'observer une distance moyenne équivalente à d_obs sous l'hypothèse du hasard.
-    Elle prend en argument le nombre minimal d'inversions néecessaires pour ordonner la séquence de gène (d_obs), et une liste de
-    taille l qui contient le nombre minimal d'inversions néecessaires pour ordonner l séquences aléatoires de  taille équivalente
+def stat_parente(v_alea, d_obs):
+    """Calcul la probabilité d'observer une distance moyenne équivalente à `d_obs` sous l'hypothèse du hasard.
+
+    Cette fonction retourne la probabilité d'observer une distance moyenne équivalente à `d_obs` sous l'hypothèse du hasard.
+    Elle prend en argument le nombre minimal d'inversions néecessaires pour ordonner la séquence de gène (`d_obs`), et une liste de
+    taille `l` qui contient le nombre minimal d'inversions néecessaires pour ordonner `l` séquences aléatoires de taille équivalente
     à la séquence d'intérêt. 
 
     Parameters
@@ -659,7 +667,7 @@ def stat_parente(v_alea, d_obs):
     Returns
     -------
     prob : list
-        Liste contenant le nombre minimal d'inversion obtenu pour les `n`
+        `prob` est une liste contenant le nombre minimal d'inversion obtenu pour les `n`
         répétitions.
 
     Notes
